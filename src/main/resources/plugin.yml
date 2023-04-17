@@ -1,0 +1,8 @@
+name: MoreEnchantLevels
+version: '${project.version}'
+main: net.nightly.moreenchantlevels.MoreEnchantLevels
+api-version: 1.19
+commands:
+ moreenchantlevels: {
+   aliases: [ 'mel', 'mench' ]
+ }
