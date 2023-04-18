@@ -1,15 +1,15 @@
 package net.nightly.moreenchantlevels.commands;
 
+import com.google.common.collect.Lists;
 import net.nightly.moreenchantlevels.MoreEnchantLevels;
-import net.nightly.moreenchantlevels.commands.AbstractCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class MoreEnchatnsCommand extends AbstractCommand {
+import java.util.List;
 
-    public MoreEnchatnsCommand() {
-        super("moreenchantslevel");
-    }
+public class MoreEnchantsCommand extends AbstractCommand {
+
+    public MoreEnchantsCommand() { super("moreenchantlevels"); }
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
@@ -19,7 +19,7 @@ public class MoreEnchatnsCommand extends AbstractCommand {
         }
 
         if(args[0].equalsIgnoreCase("reload")){
-            if(!sender.hasPermission("moreenchantslevel.reload")){
+            if(!sender.hasPermission("moreenchantlevels.reload")){
                 sender.sendMessage(ChatColor.RED + "You don't have permission to do that");
                 return;
             }
@@ -29,5 +29,11 @@ public class MoreEnchatnsCommand extends AbstractCommand {
         }
         sender.sendMessage(ChatColor.RED + "Unknown command:  " + args[0]);
         sender.sendMessage(ChatColor.RED + "Type /" + label + " for help");
+    }
+
+    @Override
+    public List<String> complete(CommandSender sender, String[] args) {
+        if(args.length == 1) return Lists.newArrayList("reload");
+        return Lists.newArrayList();
     }
 }
