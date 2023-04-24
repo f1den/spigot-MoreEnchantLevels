@@ -1,6 +1,7 @@
 package net.nightly.moreenchantlevels.logic;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -235,7 +236,6 @@ public class AnvilMerege implements Listener {
                 for (Enchantment j : ItemEnchantB.keySet()) {
                     int levelA = Integer.parseInt(ItemEnchantA.get(i).toString());
                     int levelB = Integer.parseInt(ItemEnchantB.get(j).toString());
-
                     if (i == j) {
                         if (levelA == levelB) {
                             //todo: Limitation of ench level
@@ -246,13 +246,22 @@ public class AnvilMerege implements Listener {
                             } else {
                                 reqLvl += (int) Math.ceil(levelA * 7.5);
                             }
-                            if (Result.get(i) < levelA + 1) {
+                            if (Result.get(i) != null) {
+                                if (Result.get(i) < levelA + 1) {
+                                    Result.put(i, levelA + 1);
+                                }
+                            } else {
                                 Result.put(i, levelA + 1);
                             }
 
                         } else {
                             reqLvl += (int) (Math.max(levelA, levelB) * 1.5);
-                            if (Result.get(i) < Math.max(levelA, levelB)) {
+
+                            if (Result.get(i) != null) {
+                                if (Result.get(i) < Math.max(levelA, levelB)) {
+                                    Result.put(i, Math.max(levelA, levelB));
+                                }
+                            } else {
                                 Result.put(i, Math.max(levelA, levelB));
                             }
 
@@ -261,17 +270,31 @@ public class AnvilMerege implements Listener {
                     } else if (i != j) {
                         if (!i.conflictsWith(j)) {
                             reqLvl += (int) (levelB * 4.5);
-                            if (Result.get(i) < levelA) {
+
+                            if (Result.get(i) != null) {
+                                if (Result.get(i) < levelA) {
+                                    Result.put(i, levelA);
+                                }
+                            } else {
                                 Result.put(i, levelA);
                             }
-                            if (Result.get(j) < levelB) {
+                            if (Result.get(j) != null) {
+                                if (Result.get(j) < levelB) {
+                                    Result.put(j, levelB);
+                                }
+                            } else {
                                 Result.put(j, levelB);
                             }
                         } else {
                             //TODO: если конфликтует либо оставить чар только с 1 без потери xp либо заменить вторым + 4*lvl xp
                             reqLvl += (int) (levelB * 4.5);
-                            if (Result.get(j) < levelB) {
-                                Result.put(j, levelB);
+
+                            if (Result.get(i) != null) {
+                                if (Result.get(i) < levelB) {
+                                    Result.put(i, levelB);
+                                }
+                            } else {
+                                Result.put(i, levelB);
                             }
                         }
                     }
@@ -285,12 +308,19 @@ public class AnvilMerege implements Listener {
                 } else {
                     reqLvl += (int) Math.ceil(levelB * 7.5);
                 }
-                if (Result.get(j) < levelB) {
+
+                if (Result.get(j) != null) {
+                    if (Result.get(j) < levelB) {
+                        Result.put(j, levelB);
+                    }
+                } else {
                     Result.put(j, levelB);
                 }
             }
         }
-
+        for (Enchantment i : Result.keySet()){
+            c.addUnsafeEnchantment(i, Result.get(i));
+        }
         if (e.getInventory().getRenameText() != c.getItemMeta().getDisplayName()) {
             c = rename(c, e.getInventory().getRenameText());
             reqLvl += 2;
